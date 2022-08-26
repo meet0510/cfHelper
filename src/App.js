@@ -5,8 +5,8 @@ import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
 import Navbar from "./components/Navbar";
-import Solo from './pages/home/homePages/Solo'
-import Group from './pages/home/homePages/Group'
+import Solo from './pages/home/homePages/solo/Solo'
+import Group from './pages/home/homePages/group/Group'
 
 import "./App.css"
 

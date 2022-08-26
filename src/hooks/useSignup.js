@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { projectAuth } from "../firebase/config";
+import { projectAuth, projectFirestore } from "../firebase/config";
 import { useAuthContext } from "./useAuthContext";
-import { useFirestore } from "./useFirestore";
 
 export const useSignup = () => {
   const [isCancelled, setIsCancelled] = useState(false);
   const [error, setError] = useState(null);
   const [isPending, setIsPending] = useState(false);
   const { dispatch } = useAuthContext();
-  const { addDocument } = useFirestore("user");
 
   const signup = async (email, password, displayName) => {
     setError(null);
@@ -30,12 +28,14 @@ export const useSignup = () => {
       // dispatch login action
       dispatch({ type: "LOGIN", payload: res.user });
 
-      // add displayName to database
-      addDocument({
-        uid: res.user.uid,
+      // add user to database
+      await projectFirestore.collection("users").doc(res.user.uid).set({
         cfHandle: res.user.displayName,
-        activeSoloContest: null,
-        activeGroupContest: null,
+        activeSoloContest: false,
+        activeGroupContest: false,
+        online: true,
+        liveSoloContest: {user: null, time: null, contestProblems: null},
+        liveGroupContest: {user: null, time: null, contestProblems: null},
       });
 
       if (!isCancelled) {

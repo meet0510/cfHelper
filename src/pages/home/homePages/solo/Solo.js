@@ -1,19 +1,21 @@
 import { useState, useRef, useEffect } from "react";
-import { useCollection } from "../../../hooks/useCollection";
-import { projectFirestore } from "../../../firebase/config";
-import Contest from "./Contest";
-import "./ContestDetails.css";
+import { useCollection } from "../../../../hooks/useCollection";
+import { projectFirestore } from "../../../../firebase/config"
+import { useAuthContext } from "../../../../hooks/useAuthContext";
+import CreateContest from './CreateContest'
+import "./Solo.css";
 
-export default function ContestDetails({ user }) {
+export default function Solo() {
+  const { user } = useAuthContext();
   const [problems, setProblems] = useState("");
   const [time, setTime] = useState("");
   const [rating, setRating] = useState([]);
   const [tempRating, setTempRating] = useState("");
-  const [showContest, setShowContest] = useState(null);
-  const { documents, error: bug } = useCollection("user", [
-    "uid",
+  const [createContest, setCreateContest] = useState(false);
+  const { documents, error: bug } = useCollection("users", [
+    "cfHandle",
     "==",
-    user.uid,
+    user.displayName,
   ]);
   const [error, setError] = useState(null);
   const ratingInput = useRef(null);
@@ -24,9 +26,9 @@ export default function ContestDetails({ user }) {
     }
 
     if (documents) {
-      setShowContest(documents[0].activeSoloContest);
+      setCreateContest(documents[0].activeSoloContest);
     }
-  }, [documents,bug]);
+  }, [documents, bug]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -36,11 +38,10 @@ export default function ContestDetails({ user }) {
     } else {
       const updateData = async () => {
         try {
-          console.log(documents);
           await projectFirestore
-            .collection("user")
-            .doc(documents[0].id)
-            .update({ ...documents[0], activeSoloContest: rating });
+            .collection("users")
+            .doc(user.uid)
+            .update({ activeSoloContest: true });
         } catch (err) {
           setError(err);
         }
@@ -50,6 +51,10 @@ export default function ContestDetails({ user }) {
         updateData();
       }
     }
+  };
+
+  const resetRating = () => {
+    setRating([]);
   };
 
   const handleAdd = (e) => {
@@ -76,13 +81,9 @@ export default function ContestDetails({ user }) {
     ratingInput.current.focus();
   };
 
-  const resetRating = () => {
-    setRating([]);
-  };
-
   return (
     <div>
-      {!showContest && (
+      {!createContest && (
         <form onSubmit={handleSubmit} className="contest-details">
           <h2>Contest Details</h2>
           <label>
@@ -138,7 +139,7 @@ export default function ContestDetails({ user }) {
           {error && <h2>{error}</h2>}
         </form>
       )}
-      {showContest && <Contest user={user} time={time}/>}
+      {createContest && <CreateContest user={user} rating={rating} time={time}/>}
     </div>
   );
 }

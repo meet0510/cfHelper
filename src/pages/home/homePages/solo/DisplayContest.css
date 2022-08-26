@@ -1,0 +1,30 @@
+table {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border-collapse: collapse;
+    border: 2px solid black;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th {
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    padding-top: 23px;
+    padding-bottom: 23px;
+    font-size: 1.3rem;
+}
+
+td {
+    text-align: center;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+nav a {
+    color: #333;
+    padding: 4px 10px;
+}

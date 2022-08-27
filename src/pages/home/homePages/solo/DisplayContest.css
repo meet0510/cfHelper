@@ -1,11 +1,18 @@
+.contest-box {
+    display: flex;
+    flex-direction: row;
+}
+
 table {
     margin-top: 30px;
     margin-bottom: 30px;
+    border: 2px solid var(--primary-color);
+    border-radius: 1px;
     border-collapse: collapse;
-    border: 2px solid black;
     width: 90%;
     margin-left: auto;
     margin-right: auto;
+    background-color: #fff;
 }
 
 th {
@@ -22,9 +29,4 @@ td {
     padding-bottom: 18px;
     border-right: 1px solid black;
     border-bottom: 1px solid black;
-}
-
-nav a {
-    color: #333;
-    padding: 4px 10px;
 }

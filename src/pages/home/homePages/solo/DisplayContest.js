@@ -1,11 +1,13 @@
 import { useCollection } from "../../../../hooks/useCollection";
 import { useAuthContext } from "../../../../hooks/useAuthContext";
-import "./DisplayContest.css";
 import { useEffect, useState } from "react";
+import Sidebar from "../common/Sidebar";
+import "./DisplayContest.css";
 
 export default function DisplayContest() {
   const { user } = useAuthContext();
   const [problems, setProblems] = useState(null);
+  const [time,setTime] = useState(null);
   const [error, setError] = useState(null);
   const { documents, error: bug } = useCollection("users", [
     "cfHandle",
@@ -20,15 +22,19 @@ export default function DisplayContest() {
 
     if (documents) {
       setProblems(documents[0].liveSoloContest.contestProblems);
+      setTime(documents[0].liveSoloContest.time);
     }
   }, [documents, bug]);
 
   return (
-    <div>
+    <div className="contest-box">
       {error && <p className="error">{error}</p>}
       {!problems && <p className="error">Pending!!</p>}
       {problems && (
-        <table>
+        <Sidebar users={[user.displayName]} time={parseInt(time)}/>
+      )}
+      {problems && (
+        <table className="problem-box">
           <tbody>
             <tr>
               <th>ContestID</th>

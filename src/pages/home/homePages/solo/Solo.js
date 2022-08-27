@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useCollection } from "../../../../hooks/useCollection";
-import { projectFirestore } from "../../../../firebase/config"
+import { projectFirestore } from "../../../../firebase/config";
 import { useAuthContext } from "../../../../hooks/useAuthContext";
-import CreateContest from './CreateContest'
+import CreateContest from "./CreateContest";
 import "./Solo.css";
 
 export default function Solo() {
@@ -139,7 +139,9 @@ export default function Solo() {
           {error && <h2>{error}</h2>}
         </form>
       )}
-      {createContest && <CreateContest user={user} rating={rating} time={time}/>}
+      {createContest && (
+        <CreateContest user={user} rating={rating} time={parseInt(time)} />
+      )}
     </div>
   );
 }

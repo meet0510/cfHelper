@@ -1,0 +1,7 @@
+.rank {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    font-size: 1.3rem;
+    margin-left: 25px;
+}

@@ -11,10 +11,14 @@ export default function CreateContest({ user, rating, time }) {
 
   useEffect(() => {
     const addContestData = async () => {
+      let tempProblems = contestProblems.map((problem) => {
+        return {...problem, solved: false}
+      })
+
       await projectFirestore.collection("users").doc(user.uid).update({
         "liveSoloContest.user" : user.displayName,
         "liveSoloContest.time" : time,
-        "liveSoloContest.contestProblems" : contestProblems
+        "liveSoloContest.contestProblems" : tempProblems,
       });
     };
 

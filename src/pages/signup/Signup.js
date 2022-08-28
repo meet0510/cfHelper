@@ -86,6 +86,9 @@ export default function Signup() {
           <p className="error">
             Attempt this problem in given time to verify your cf handle
           </p>
+          <p className="error">
+            Do not refresh the page
+          </p>
           <VerifyUser
             email={email}
             password={password}

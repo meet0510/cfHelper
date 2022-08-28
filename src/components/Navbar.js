@@ -39,17 +39,17 @@ export default function Navbar() {
                 {user.displayName}
               </a>
             </li>
-            {path !== "/solo" && (
+            {path !== "/history" && (
               <li>
-                <Link to="/solo" className="btn">
-                  Solo
+                <Link to="/history" className="btn">
+                  History
                 </Link>
               </li>
             )}
-            {path !== "/group" && (
+            {path !== "/" && (
               <li>
-                <Link to="/group" className="btn">
-                  Group
+                <Link to="/" className="btn">
+                  Home
                 </Link>
               </li>
             )}

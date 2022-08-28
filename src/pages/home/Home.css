@@ -1,0 +1,56 @@
+.contest-details {
+    max-width: 450px;
+    margin: 30px auto;
+    width: 100%;
+    padding: 40px;
+    border: 1px solid #ddd;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.05);
+    background: #fff;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+}
+
+.rating button {
+    margin: 0 0 0 10px;
+}
+
+.show-rating {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.show-rating p {
+    margin: 5px 5px;
+    padding: 7px 7px 7px 7px;
+    border-width: 2px;
+    border-style: groove;
+    border-radius: 4px;
+}
+
+.users {
+    display: flex;
+    align-items: center;
+}
+
+.users button {
+    margin: 0 0 0 10px;
+}
+
+.show-users {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.show-users p {
+    margin: 5px 5px;
+    padding: 7px 7px 7px 7px;
+    border-width: 2px;
+    border-style: groove;
+    border-radius: 4px;
+}

@@ -20,7 +20,7 @@
 
 .signup-form .verification .timer-box {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-around;
     font-size: 1.4rem;
 }

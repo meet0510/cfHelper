@@ -29,13 +29,11 @@ export const useSignup = () => {
       dispatch({ type: "LOGIN", payload: res.user });
 
       // add user to database
-      await projectFirestore.collection("users").doc(res.user.uid).set({
+      await projectFirestore.collection("users").doc(res.user.displayName).set({
         cfHandle: res.user.displayName,
-        activeSoloContest: false,
-        activeGroupContest: false,
         online: true,
-        liveSoloContest: {user: null, time: null, contestProblems: null},
-        liveGroupContest: {user: null, time: null, contestProblems: null},
+        contestRunning: false,
+        runningContestId: null,
       });
 
       if (!isCancelled) {

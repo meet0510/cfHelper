@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { projectAuth,projectFirestore } from "../firebase/config";
+import { projectAuth, projectFirestore } from "../firebase/config";
 import { useAuthContext } from "./useAuthContext";
 
 export const useLogin = () => {
@@ -19,7 +19,10 @@ export const useLogin = () => {
       dispatch({ type: "LOGIN", payload: res.user });
 
       // update online status
-      await projectFirestore.collection("users").doc(res.user.uid).update({ online: true });
+      await projectFirestore
+        .collection("users")
+        .doc(res.user.displayName)
+        .update({ online: true });
 
       if (!isCancelled) {
         setIsPending(false);

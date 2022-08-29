@@ -55,7 +55,7 @@ export default function CreateContest({ users, rating, time }) {
 
   return (
     <div>
-      {isPending && <p>Pending</p>}
+      {isPending && <p className="error">Pending</p>}
       {error && <p className="error">{error}</p>}
       {!isPending && contestId !== null && <DisplayContest contestId={contestId}/>}
     </div>

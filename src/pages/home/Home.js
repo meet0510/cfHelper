@@ -132,7 +132,7 @@ export default function Home() {
 
   return (
     <div className="home">
-      {!createContest && (
+      {!createContest && document && (
         <form onSubmit={handleSubmit} className="contest-details">
           <h2>Contest Details</h2>
           <label>

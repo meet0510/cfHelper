@@ -1,29 +1,40 @@
 import { useState, useEffect } from "react";
+import { projectFirestore } from "../../../firebase/config";
 import { useCollection } from "../../../hooks/useCollection";
-import Sidebar from '../homeSidebar/Sidebar'
+import Sidebar from "../homeSidebar/Sidebar";
 import "./DisplayContest.css";
 
 export default function DisplayContest({ contestId }) {
   const [problems, setProblems] = useState(null);
   const [time, setTime] = useState(null);
   const [error, setError] = useState(null);
-  const { documents, error: bug } = useCollection(
-    "liveContestData",
-    null,
-    null,
-    contestId
-  );
+  const [documents, setDocuments] = useState(null);
 
   useEffect(() => {
-    if (bug) {
-      setError(bug);
-    }
+    const ref = projectFirestore.collection("liveContestData").doc(contestId);
 
+    const unsubscribe = ref.onSnapshot(
+      (snapshot) => {
+        setDocuments(snapshot.data());
+      },
+      (error) => {
+        console.log(error);
+        setError("could not fetch the data");
+      }
+    );
+
+    // unsubscribe on unmount
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
     if (documents) {
-      setProblems(documents[0].problems);
-      setTime(documents[0].time);
+      setProblems(documents.problems);
+      setTime(documents.time);
     }
-  }, [documents, bug]);
+  }, [documents]);
+
+  console.log(documents);
 
   return (
     <div className="contest-box">

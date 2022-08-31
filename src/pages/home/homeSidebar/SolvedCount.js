@@ -1,24 +1,32 @@
 import { useEffect, useState } from "react";
-import { useCollection } from "../../../hooks/useCollection";
+import { projectFirestore } from "../../../firebase/config";
 import "./SolvedCount.css";
 
 export default function SolvedCount({ contestId }) {
   const [users, setUsers] = useState(null);
   const [error, setError] = useState(null);
-  const { documents, error: bug } = useCollection(
-    "liveContestData",
-    null,
-    null,
-    contestId
-  );
+  const [documents, setDocuments] = useState(null);
 
   useEffect(() => {
-    if (bug) {
-      setError(bug);
-    }
+    const ref = projectFirestore.collection("liveContestData").doc(contestId);
 
+    const unsubscribe = ref.onSnapshot(
+      (snapshot) => {
+        setDocuments(snapshot.data());
+      },
+      (error) => {
+        console.log(error);
+        setError("could not fetch the data");
+      }
+    );
+
+    // unsubscribe on unmount
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
     if (documents) {
-      let solvedCount = documents[0].users.map((user) => {
+      let solvedCount = documents.users.map((user) => {
         let count = 0;
         user.status.map((status) => {
           if (status === "OK") {
@@ -34,7 +42,7 @@ export default function SolvedCount({ contestId }) {
 
       setUsers(solvedCount);
     }
-  }, [documents, bug]);
+  }, [documents]);
 
   return (
     <div className="solved-count-box">

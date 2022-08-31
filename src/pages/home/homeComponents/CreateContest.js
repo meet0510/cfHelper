@@ -19,7 +19,7 @@ export default function CreateContest({ users, rating, time }) {
   useEffect(() => {
     if (documents) {
       if (documents[0].runningContestId !== null) {
-        setContestId(documents.runningContestId);
+        setContestId(documents[0].runningContestId);
       }
     }
   }, [documents])

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useCollection } from "../../hooks/useCollection";
-import { projectFirestore, projectDatabase } from "../../firebase/config";
+import { projectFirestore } from "../../firebase/config";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import CreateContest from './homeComponents/CreateContest'
 import "./Home.css";

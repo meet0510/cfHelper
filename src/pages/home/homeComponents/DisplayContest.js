@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { useAuthContext } from "../../../hooks/useAuthContext";
 import { useCollection } from "../../../hooks/useCollection";
+import Sidebar from '../homeSidebar/Sidebar'
 import "./DisplayContest.css";
 
 export default function DisplayContest({ contestId }) {
-  const { user } = useAuthContext();
   const [problems, setProblems] = useState(null);
   const [time, setTime] = useState(null);
   const [error, setError] = useState(null);
@@ -30,7 +29,7 @@ export default function DisplayContest({ contestId }) {
     <div className="contest-box">
       {error && <p className="error">{error}</p>}
       {!problems && <p className="error">Pending!!</p>}
-      {/* {problems && <Sidebar users={[user.displayName]} time={parseInt(time)} />} */}
+      {problems && <Sidebar contestId={contestId} />}
       {problems && (
         <table className="problem-box">
           <tbody>

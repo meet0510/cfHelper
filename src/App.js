@@ -4,7 +4,7 @@ import { useAuthContext } from "./hooks/useAuthContext";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
-import History from "./pages/history/History"
+import History from "./pages/history/History";
 import Navbar from "./components/Navbar";
 import "./App.css";
 

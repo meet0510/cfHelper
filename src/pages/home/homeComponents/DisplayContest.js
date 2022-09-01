@@ -33,8 +33,6 @@ export default function DisplayContest({ contestId }) {
     }
   }, [documents]);
 
-  console.log(documents);
-
   return (
     <div className="contest-box">
       {error && <p className="error">{error}</p>}

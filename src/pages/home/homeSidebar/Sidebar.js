@@ -3,8 +3,24 @@ import { useState, useEffect } from "react";
 import SolvedCount from "./SolvedCount";
 import "./Sidebar.css";
 
-export default function Sidebar({ contestId, startTime }) {
-  const [time,setTime] = useState(startTime);
+export default function Sidebar({ contestId }) {
+  const [time,setTime] = useState(null);
+
+  useEffect(() => {
+    const ref = projectFirestore.collection("liveContestData").doc(contestId);
+
+    const unsubscribe = ref.onSnapshot(
+      (snapshot) => {
+        setTime(snapshot.data().time);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+
+    // unsubscribe on unmount
+    return () => unsubscribe();
+  }, [])
 
   useEffect(() => {
     const intervalID = setInterval(() => {
@@ -16,7 +32,7 @@ export default function Sidebar({ contestId, startTime }) {
 
   useEffect(() => {
     const ref = projectFirestore.collection("liveContestData").doc(contestId);
-    ref.update({ time: time });
+    {time && ref.update({ time: time })}
   }, [time])
 
   return (

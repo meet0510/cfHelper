@@ -33,7 +33,7 @@ export default function CreateContest({ users, rating, time }) {
 
       await projectFirestore.collection("liveContestData").doc(users[0]).set({
         users: tempUsers,
-        time: time,
+        time: time*60,
         problems: contestProblems,
         submissions: [],
       })

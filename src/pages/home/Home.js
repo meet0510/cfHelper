@@ -212,7 +212,7 @@ export default function Home() {
           {error && <h2>{error}</h2>}
         </form>
       )}
-      {createContest && <CreateContest users={users} rating={rating} time={time}/>}
+      {createContest && <CreateContest users={users} rating={rating} time={parseInt(time)}/>}
     </div>
   );
 }

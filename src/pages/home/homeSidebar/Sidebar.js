@@ -1,6 +1,7 @@
 import { projectFirestore } from "../../../firebase/config";
 import { useState, useEffect } from "react";
 import SolvedCount from "./SolvedCount";
+import ContestEnd from './ContestEnd'
 import "./Sidebar.css";
 
 export default function Sidebar({ contestId }) {
@@ -39,6 +40,7 @@ export default function Sidebar({ contestId }) {
         {Math.floor(time / 60)} : {Math.floor(time % 60)}
       </h2>
       <SolvedCount contestId={contestId} />
+      {time === 0 && <ContestEnd contestId={contestId}/>}
     </div>
   );
 }

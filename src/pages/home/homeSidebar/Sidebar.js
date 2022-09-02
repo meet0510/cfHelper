@@ -4,7 +4,7 @@ import SolvedCount from "./SolvedCount";
 import "./Sidebar.css";
 
 export default function Sidebar({ contestId }) {
-  const [time,setTime] = useState(null);
+  const [time, setTime] = useState(null);
 
   useEffect(() => {
     const ref = projectFirestore.collection("liveContestData").doc(contestId);
@@ -20,24 +20,24 @@ export default function Sidebar({ contestId }) {
 
     // unsubscribe on unmount
     return () => unsubscribe();
-  }, [])
+  }, []);
 
   useEffect(() => {
-    const intervalID = setInterval(() => {
-      setTime(prevTime => prevTime - 1)
-    }, 60000);
-
-    return () => clearInterval(intervalID);
-  }, [])
+    time > 0 && setTimeout(() => setTime(time - 1), 1000);
+  }, [time]);
 
   useEffect(() => {
     const ref = projectFirestore.collection("liveContestData").doc(contestId);
-    {time && ref.update({ time: time })}
-  }, [time])
+    {
+      time && ref.update({ time: time });
+    }
+  }, [time]);
 
   return (
     <div className="side-bar">
-      <h2>{time} minutes left</h2>
+      <h2>
+        {Math.floor(time / 60)} : {Math.floor(time % 60)}
+      </h2>
       <SolvedCount contestId={contestId} />
     </div>
   );

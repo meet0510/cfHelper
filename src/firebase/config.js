@@ -18,6 +18,6 @@ firebase.initializeApp(firebaseConfig);
 const projectFirestore = firebase.firestore();
 const projectAuth = firebase.auth();
 const timestamp = firebase.firestore.Timestamp;
-const addToArray = (value) => firebase.firestore.FieldValue.arrayUnion(value)
+const addToArray = (value) => firebase.firestore.FieldValue.arrayUnion(value);
 
 export { projectFirestore, projectAuth, timestamp, addToArray };

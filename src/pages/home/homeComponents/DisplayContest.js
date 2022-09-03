@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import { projectFirestore } from "../../../firebase/config";
+import { useAuthContext } from "../../../hooks/useAuthContext";
 import Sidebar from "../homeSidebar/Sidebar";
+import SubmissionList from "./SubmissionList";
 import "./DisplayContest.css";
 
 export default function DisplayContest({ contestId }) {
+  const { user } = useAuthContext();
   const [problems, setProblems] = useState(null);
-  const [time, setTime] = useState(null);
   const [error, setError] = useState(null);
   const [documents, setDocuments] = useState(null);
+  const [showSubmissionList, setShowSubmissionList] = useState(false);
 
   useEffect(() => {
     const ref = projectFirestore.collection("liveContestData").doc(contestId);
@@ -29,7 +32,6 @@ export default function DisplayContest({ contestId }) {
   useEffect(() => {
     if (documents) {
       setProblems(documents.problems);
-      setTime(documents.time);
     }
   }, [documents]);
 
@@ -37,8 +39,8 @@ export default function DisplayContest({ contestId }) {
     <div className="contest-box">
       {error && <p className="error">{error}</p>}
       {!problems && <p className="error">Pending!!</p>}
-      {problems && <Sidebar contestId={contestId} />}
-      {problems && (
+      {problems && !showSubmissionList && <Sidebar contestId={contestId} />}
+      {problems && !showSubmissionList && (
         <table className="problem-box">
           <tbody>
             <tr>
@@ -84,6 +86,16 @@ export default function DisplayContest({ contestId }) {
           </tbody>
         </table>
       )}
+      {problems && !showSubmissionList && (
+        <button onClick={() => setShowSubmissionList(true)}>Click</button>
+      )}
+      {problems && <SubmissionList
+        user={user.displayName}
+        showList={showSubmissionList}
+        setShowList={setShowSubmissionList}
+        contestId={contestId}
+        problems={problems}
+      />}
     </div>
   );
 }

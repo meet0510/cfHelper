@@ -35,6 +35,8 @@ export default function SubmissionList({
   useEffect(async () => {
     const res = await fetch(url);
     const data = await res.json();
+    console.log(11);
+    console.log(data);
 
     if (data) {
       setPrevSubmissionId(data.result[0].id);
@@ -47,11 +49,12 @@ export default function SubmissionList({
     const data = await res.json();
 
     if (
-      data &&
-      prevSubmissionId &&
+      data !== null &&
+      prevSubmissionId !== null &&
       data.result[0].id !== prevSubmissionId &&
       data.result[0].verdict !== "TESTING"
     ) {
+      setPrevSubmissionId(data.result[0].id);
       problems.map(async (problem) => {
         if (
           problem.contestId === data.result[0].contestId &&
@@ -79,7 +82,6 @@ export default function SubmissionList({
             console.log(err.message);
             setError(err.message);
           }
-          setPrevSubmissionId(data.result[0].id);
         }
       });
     }
@@ -89,10 +91,10 @@ export default function SubmissionList({
   useEffect(() => {
     const intervalID = setInterval(() => {
       fetchData();
-    }, 20000);
+    }, 5000);
 
     return () => clearInterval(intervalID);
-  }, []);
+  }, [prevSubmissionId]);
 
   return (
     <div>

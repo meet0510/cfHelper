@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { projectFirestore, timestamp } from "../../../firebase/config";
+import { projectFirestore, timestamp, addToArray } from "../../../firebase/config";
 
 export default function ContestEnd({ contestId }) {
   const [contestData, setContestData] = useState(null);
@@ -27,11 +27,9 @@ export default function ContestEnd({ contestId }) {
         try {
           const { time, ...contestDataWithOutTime } = contestData;
           const createdAt = timestamp.fromDate(new Date());
-          await projectFirestore.collection("PastContestData").add({
-            ...contestDataWithOutTime,
-            cfHandle: user.cfHandle,
-            createdAt,
-          });
+          await projectFirestore.collection("PastContestData").doc(user.cfHandle).update({
+            ContestList: addToArray({...contestDataWithOutTime,createdAt})
+          })
         } catch (err) {
           console.log(err.message);
           setError(err.message);

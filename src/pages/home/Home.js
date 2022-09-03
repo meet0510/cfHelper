@@ -153,7 +153,7 @@ export default function Home() {
               type="number"
               onChange={(e) => setTime(e.target.value)}
               value={time}
-              min={10}
+              min={1}
               max={300}
               placeholder="10-300"
               required

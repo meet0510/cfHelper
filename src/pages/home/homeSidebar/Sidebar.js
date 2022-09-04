@@ -1,18 +1,18 @@
 import { projectFirestore } from "../../../firebase/config";
 import { useState, useEffect } from "react";
 import SolvedCount from "./SolvedCount";
-import ContestEnd from './ContestEnd'
+import ContestEnd from "./ContestEnd";
 import "./Sidebar.css";
 
-export default function Sidebar({ contestId }) {
+export default function Sidebar({ contestId, isAdmin }) {
   const [time, setTime] = useState(null);
 
   useEffect(() => {
-    const ref = projectFirestore.collection("liveContestData").doc(contestId);
+    const ref = projectFirestore.collection("LiveContestData").doc(contestId);
 
     const unsubscribe = ref.onSnapshot(
       (snapshot) => {
-        setTime(snapshot.data().time);
+        setTime(snapshot.data().timeLeft);
       },
       (error) => {
         console.log(error);
@@ -24,13 +24,15 @@ export default function Sidebar({ contestId }) {
   }, []);
 
   useEffect(() => {
-    time > 0 && setTimeout(() => setTime(time - 1), 1000);
+    if (isAdmin && time > 0) {
+      setTimeout(() => setTime(time - 1), 1000);
+    }
   }, [time]);
 
   useEffect(() => {
-    const ref = projectFirestore.collection("liveContestData").doc(contestId);
-    {
-      time && ref.update({ time: time });
+    if (isAdmin && time !== null) {
+      const ref = projectFirestore.collection("LiveContestData").doc(contestId);
+      ref.update({ timeLeft: time });
     }
   }, [time]);
 
@@ -40,7 +42,7 @@ export default function Sidebar({ contestId }) {
         {Math.floor(time / 60)} : {Math.floor(time % 60)}
       </h2>
       <SolvedCount contestId={contestId} />
-      {time === 0 && <ContestEnd contestId={contestId}/>}
+      {time === 0 && <ContestEnd contestId={contestId} />}
     </div>
   );
 }

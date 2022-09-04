@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { projectFirestore, addToArray } from "../../../firebase/config";
+import {
+  projectFirestore,
+  projectDatabase,
+  addToArray,
+} from "../../../firebase/config";
 
 export default function SubmissionList({
   user,
@@ -12,15 +16,18 @@ export default function SubmissionList({
     "https://codeforces.com/api/user.status?handle=" + user + "&from=1&count=1";
   const [prevSubmissionId, setPrevSubmissionId] = useState(null);
   const [submissionList, setSubmissionList] = useState(null);
+  const [totalTime,setTotalTime] = useState(null);
+  const [time, setTime] = useState(null);
   const [error, setError] = useState(null);
 
   // catch the submission List from database
   useEffect(() => {
-    const ref = projectFirestore.collection("liveContestData").doc(contestId);
+    const ref = projectFirestore.collection("LiveContestData").doc(contestId);
 
     const unsubscribe = ref.onSnapshot(
       (snapshot) => {
         setSubmissionList(snapshot.data().submissions);
+        setTotalTime(snapshot.data().totalTime);
       },
       (error) => {
         console.log(error);
@@ -35,8 +42,6 @@ export default function SubmissionList({
   useEffect(async () => {
     const res = await fetch(url);
     const data = await res.json();
-    console.log(11);
-    console.log(data);
 
     if (data) {
       setPrevSubmissionId(data.result[0].id);
@@ -60,6 +65,11 @@ export default function SubmissionList({
           problem.contestId === data.result[0].contestId &&
           problem.index === data.result[0].problem.index
         ) {
+          const res = await projectFirestore
+            .collection("LiveContestData")
+            .doc(contestId)
+            .get();
+
           const submission = {
             user: user,
             problemName: data.result[0].problem.name,
@@ -68,12 +78,13 @@ export default function SubmissionList({
             timeLimit: data.result[0].timeConsumedMillis,
             memoryLimit: data.result[0].memoryConsumedBytes,
             language: data.result[0].programmingLanguage,
+            time: totalTime - res.data().timeLeft,
           };
 
           // add submission to database if it matches
           try {
             await projectFirestore
-              .collection("liveContestData")
+              .collection("LiveContestData")
               .doc(contestId)
               .update({
                 submissions: addToArray(submission),
@@ -114,6 +125,7 @@ export default function SubmissionList({
             <p>{submission.timeLimit}</p>
             <p>{submission.memoryLimit}</p>
             <p>{submission.language}</p>
+            <p>{submission.time}</p>
           </div>
         ))}
     </div>

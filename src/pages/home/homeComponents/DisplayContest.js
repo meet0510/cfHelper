@@ -13,7 +13,7 @@ export default function DisplayContest({ contestId }) {
   const [showSubmissionList, setShowSubmissionList] = useState(false);
 
   useEffect(() => {
-    const ref = projectFirestore.collection("liveContestData").doc(contestId);
+    const ref = projectFirestore.collection("LiveContestData").doc(contestId);
 
     const unsubscribe = ref.onSnapshot(
       (snapshot) => {
@@ -39,7 +39,12 @@ export default function DisplayContest({ contestId }) {
     <div className="contest-box">
       {error && <p className="error">{error}</p>}
       {!problems && <p className="error">Pending!!</p>}
-      {problems && !showSubmissionList && <Sidebar contestId={contestId} />}
+      {problems && (
+        <Sidebar
+          contestId={contestId}
+          isAdmin={documents.users[0].cfHandle === user.displayName}
+        />
+      )}
       {problems && !showSubmissionList && (
         <table className="problem-box">
           <tbody>
@@ -89,13 +94,15 @@ export default function DisplayContest({ contestId }) {
       {problems && !showSubmissionList && (
         <button onClick={() => setShowSubmissionList(true)}>Click</button>
       )}
-      {problems && <SubmissionList
-        user={user.displayName}
-        showList={showSubmissionList}
-        setShowList={setShowSubmissionList}
-        contestId={contestId}
-        problems={problems}
-      />}
+      {problems && (
+        <SubmissionList
+          user={user.displayName}
+          showList={showSubmissionList}
+          setShowList={setShowSubmissionList}
+          contestId={contestId}
+          problems={problems}
+        />
+      )}
     </div>
   );
 }

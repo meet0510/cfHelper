@@ -1,5 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
+import "firebase/database"
 import "firebase/auth";
 
 const firebaseConfig = {
@@ -16,8 +17,9 @@ firebase.initializeApp(firebaseConfig);
 
 // init services
 const projectFirestore = firebase.firestore();
+const projectDatabase = firebase.database();
 const projectAuth = firebase.auth();
 const timestamp = firebase.firestore.Timestamp;
 const addToArray = (value) => firebase.firestore.FieldValue.arrayUnion(value);
 
-export { projectFirestore, projectAuth, timestamp, addToArray };
+export { projectFirestore, projectDatabase, projectAuth, timestamp, addToArray };

@@ -6,7 +6,7 @@ export default function ContestEnd({ contestId }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const ref = projectFirestore.collection("liveContestData").doc(contestId);
+    const ref = projectFirestore.collection("LiveContestData").doc(contestId);
 
     const unsubscribe = ref.onSnapshot(
       (snapshot) => {
@@ -52,7 +52,7 @@ export default function ContestEnd({ contestId }) {
       // remove contest from live contest
       try {
         await projectFirestore
-          .collection("liveContestData")
+          .collection("LiveContestData")
           .doc(contestId)
           .delete();
       } catch (err) {

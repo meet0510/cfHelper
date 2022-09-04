@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useCollection } from "../../hooks/useCollection";
 import { projectFirestore } from "../../firebase/config";
 import { useAuthContext } from "../../hooks/useAuthContext";
-import CreateContest from './homeComponents/CreateContest'
+import CreateContest from "./homeComponents/CreateContest";
 import "./Home.css";
 
 export default function Home() {
@@ -80,15 +80,9 @@ export default function Home() {
     e.preventDefault();
 
     if (tempRating < 800) {
-      ratingInput.current.setCustomValidity(
-        "Value must be greater than equal to 800"
-      );
-      ratingInput.current.reportValidity();
+      window.alert("Value must be greater than equal to 800");
     } else if (tempRating > 3500) {
-      ratingInput.current.setCustomValidity(
-        "Value must be less than equal to 3500"
-      );
-      ratingInput.current.reportValidity();
+      window.alert("Value must be less than equal to 3500");
     } else if (tempRating) {
       setRating((prevRating) => [
         ...prevRating,
@@ -96,8 +90,8 @@ export default function Home() {
       ]);
     }
 
-    setTempRating("");
     ratingInput.current.focus();
+    setTempRating("");
   };
 
   const handleUserAdd = async (e) => {
@@ -105,8 +99,7 @@ export default function Home() {
     let authorized = false;
 
     if (users.includes(tempUser)) {
-      userInput.current.setCustomValidity("User already present");
-      userInput.current.reportValidity();
+      window.alert("User already present");
     } else {
       allUsers.map((user) => {
         if (
@@ -122,12 +115,12 @@ export default function Home() {
       });
 
       if (!authorized) {
-        userInput.current.setCustomValidity(
-          "Either user has not done signup or the contest is running"
-        );
-        userInput.current.reportValidity();
+        window.alert("Either user is not online or the contest is running");
       }
     }
+
+    userInput.current.focus();
+    setTempUser("");
   };
 
   return (
@@ -212,7 +205,9 @@ export default function Home() {
           {error && <h2>{error}</h2>}
         </form>
       )}
-      {createContest && <CreateContest users={users} rating={rating} time={parseInt(time)}/>}
+      {createContest && (
+        <CreateContest users={users} rating={rating} time={parseInt(time)} />
+      )}
     </div>
   );
 }

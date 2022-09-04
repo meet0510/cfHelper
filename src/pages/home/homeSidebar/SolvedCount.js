@@ -8,7 +8,7 @@ export default function SolvedCount({ contestId }) {
   const [documents, setDocuments] = useState(null);
 
   useEffect(() => {
-    const ref = projectFirestore.collection("liveContestData").doc(contestId);
+    const ref = projectFirestore.collection("LiveContestData").doc(contestId);
 
     const unsubscribe = ref.onSnapshot(
       (snapshot) => {

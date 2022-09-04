@@ -36,6 +36,13 @@ export const useSignup = () => {
         runningContestId: null,
       });
 
+      await projectFirestore
+        .collection("PastContestData")
+        .doc(res.user.displayName)
+        .set({
+          ContestList: [],
+        });
+
       if (!isCancelled) {
         setIsPending(false);
         setError(null);

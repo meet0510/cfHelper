@@ -42,7 +42,7 @@ export default function Sidebar({ contestId, isAdmin }) {
         {Math.floor(time / 60)} : {Math.floor(time % 60)}
       </h2>
       <SolvedCount contestId={contestId} />
-      {time === 0 && <ContestEnd contestId={contestId} />}
+      {time === 0 && isAdmin && <ContestEnd contestId={contestId} />}
     </div>
   );
 }

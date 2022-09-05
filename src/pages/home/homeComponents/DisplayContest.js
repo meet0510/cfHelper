@@ -11,6 +11,7 @@ export default function DisplayContest({ contestId }) {
   const [error, setError] = useState(null);
   const [documents, setDocuments] = useState(null);
   const [showSubmissionList, setShowSubmissionList] = useState(false);
+  const [index, setIndex] = useState(null);
 
   useEffect(() => {
     const ref = projectFirestore.collection("LiveContestData").doc(contestId);
@@ -32,6 +33,12 @@ export default function DisplayContest({ contestId }) {
   useEffect(() => {
     if (documents) {
       setProblems(documents.problems);
+
+      documents.users.map((user_, index) => {
+        if (user_.cfHandle === user.displayName) {
+          setIndex(index);
+        }
+      });
     }
   }, [documents]);
 
@@ -101,6 +108,7 @@ export default function DisplayContest({ contestId }) {
           setShowList={setShowSubmissionList}
           contestId={contestId}
           problems={problems}
+          index={index}
         />
       )}
     </div>

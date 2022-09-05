@@ -6,6 +6,8 @@ import "./History.css";
 export default function History() {
   const { user } = useAuthContext();
   const [contests, setContests] = useState(null);
+  const [showCompleteDetails,setShowCompleteDetails] = useState(false);
+  const [index,setIndex] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -32,13 +34,26 @@ export default function History() {
     return () => unsubscribe();
   }, []);
 
+  const handleClick = (index_) => {
+    setIndex(index_);
+    setShowCompleteDetails(true);
+  }
+
   return (
     <div>
       {error && <p className="error">{error}</p>}
-      {contests &&
-        contests.map((contest) => (
-          <p>{contest.createdAt.toDate().toString()}</p>
-        ))}
+      {contests && !showCompleteDetails && (
+        <ul className="history">
+          {contests.map((contest,index) => (
+            <li key={index} onClick={() => handleClick(index)}>
+              <p>{index + 1}</p>
+              <p>Time : {contest.totalTime}</p>
+              <p>Date : {contest.createdAt.toDate().toString()}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+      {contests && showCompleteDetails && console.log(contests[index])}
     </div>
   );
 }

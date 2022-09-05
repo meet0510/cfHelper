@@ -1,9 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  projectFirestore,
-  projectDatabase,
-  addToArray,
-} from "../../../firebase/config";
+import { projectFirestore, addToArray } from "../../../firebase/config";
 
 export default function SubmissionList({
   user,
@@ -11,13 +7,15 @@ export default function SubmissionList({
   setShowList,
   contestId,
   problems,
+  index,
 }) {
   const url =
     "https://codeforces.com/api/user.status?handle=" + user + "&from=1&count=1";
   const [prevSubmissionId, setPrevSubmissionId] = useState(null);
   const [submissionList, setSubmissionList] = useState(null);
-  const [totalTime,setTotalTime] = useState(null);
-  const [time, setTime] = useState(null);
+  const [userStatus, setUserStatus] = useState(null);
+  const [changes,setChanges] = useState(false);
+  const [totalTime, setTotalTime] = useState(null);
   const [error, setError] = useState(null);
 
   // catch the submission List from database
@@ -28,6 +26,7 @@ export default function SubmissionList({
       (snapshot) => {
         setSubmissionList(snapshot.data().submissions);
         setTotalTime(snapshot.data().totalTime);
+        setUserStatus(snapshot.data().users);
       },
       (error) => {
         console.log(error);
@@ -60,7 +59,7 @@ export default function SubmissionList({
       data.result[0].verdict !== "TESTING"
     ) {
       setPrevSubmissionId(data.result[0].id);
-      problems.map(async (problem) => {
+      problems.map(async (problem, index_) => {
         if (
           problem.contestId === data.result[0].contestId &&
           problem.index === data.result[0].problem.index
@@ -93,6 +92,33 @@ export default function SubmissionList({
             console.log(err.message);
             setError(err.message);
           }
+
+          // update user Status
+          let new_verdict = null;
+          let new_user_status = userStatus;
+
+          if (userStatus[index].status[index_] === "IDLE") {
+            if (data.result[0].verdict !== "OK") {
+              new_verdict = "REJECTED";
+              new_user_status[index].status[index_] = new_verdict;
+            } else {
+              new_verdict = "OK";
+              new_user_status[index].status[index_] = new_verdict;
+            }
+          } else if (userStatus[index].status[index_] === "REJECTED") {
+            if (data.result[0].verdict === "OK") {
+              new_verdict = "OK";
+              new_user_status[index].status[index_] = new_verdict;
+            }
+          }
+
+          if (new_verdict !== null) {
+            const ref = projectFirestore
+              .collection("LiveContestData")
+              .doc(contestId);
+            ref.update({ users: new_user_status });
+            setChanges((prevChange) => !prevChange);
+          }
         }
       });
     }
@@ -105,7 +131,7 @@ export default function SubmissionList({
     }, 5000);
 
     return () => clearInterval(intervalID);
-  }, [prevSubmissionId]);
+  }, [prevSubmissionId,changes]);
 
   return (
     <div>

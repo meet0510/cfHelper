@@ -8,6 +8,10 @@
     background: #fff;
 }
 
+.contest-details h2 {
+    font-weight: 600;
+}
+
 .rating {
     display: flex;
     align-items: center;

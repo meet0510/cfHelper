@@ -12,7 +12,6 @@ export default function Navbar() {
     <div className="navbar">
       <ul>
         <li className="logo">cfHelp</li>
-
         {!user && (
           <>
             <li>

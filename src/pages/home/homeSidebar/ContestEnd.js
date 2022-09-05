@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { projectFirestore, timestamp, addToArray } from "../../../firebase/config";
+import {
+  projectFirestore,
+  timestamp,
+  addToArray,
+} from "../../../firebase/config";
 
 export default function ContestEnd({ contestId }) {
   const [contestData, setContestData] = useState(null);
@@ -21,15 +25,18 @@ export default function ContestEnd({ contestId }) {
   }, []);
 
   useEffect(async () => {
-    if (contestData !== null) {
+    if (contestData !== null && contestData.timeLeft === 0) {
       // add contest-data to past-contest data
       contestData.users.map(async (user) => {
         try {
-          const { time, ...contestDataWithOutTime } = contestData;
-          const createdAt = timestamp.fromDate(new Date());
-          await projectFirestore.collection("PastContestData").doc(user.cfHandle).update({
-            ContestList: addToArray({...contestDataWithOutTime,createdAt})
-          })
+          const { timeLeft, ...contestDataWithOutTime } = contestData;
+          const endedAt = timestamp.fromDate(new Date());
+          await projectFirestore
+            .collection("PastContestData")
+            .doc(user.cfHandle)
+            .update({
+              ContestList: addToArray({ ...contestDataWithOutTime, endedAt }),
+            });
         } catch (err) {
           console.log(err.message);
           setError(err.message);

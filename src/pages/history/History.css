@@ -1,0 +1,20 @@
+.history li {
+    margin: 30px auto;
+    border: 1px solid #f2f2f2;
+    box-shadow: 3px 3px 5px rgba(50, 50, 50, 0.1);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    border-left: 4px solid var(--heading-color);
+}
+
+.history li:hover {
+    transform: scale(1.02);
+    cursor: pointer;
+}
+
+.history li p {
+    margin-right: 20px;
+}

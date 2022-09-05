@@ -8,6 +8,10 @@
     background: #fff;
 }
 
+.signup-form h2 {
+    font-weight: 500;
+}
+
 .signup-form .error {
     margin-top: 20px;
 }
@@ -20,7 +24,6 @@
 
 .signup-form .verification .timer-box {
     display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+    flex-direction: row;
     font-size: 1.4rem;
 }

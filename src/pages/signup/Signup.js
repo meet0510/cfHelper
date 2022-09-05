@@ -79,7 +79,7 @@ export default function Signup() {
             >
               Watermelon
             </a>
-            <Timer minutes={5} seconds={0} passTimerValue={setTimerValue} />
+            <Timer minutes={10} seconds={0} passTimerValue={setTimerValue} />
           </div>
           {timerValue === 0 && setCheckAuth(false)}
           {timerValue === 0 && setErrorMessage("Session expired! Signup again")}

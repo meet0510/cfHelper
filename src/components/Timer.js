@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/free-solid-svg-icons";
 import "./Timer.css";
 
 export default function Timer(props) {
@@ -19,9 +17,6 @@ export default function Timer(props) {
 
   return (
     <div className="timer">
-      <p>
-        <FontAwesomeIcon icon={faClock} />{" "}
-      </p>
       <p className="time">
         {Math.floor(currSeconds / 60)} : {Math.floor(currSeconds % 60)}
       </p>

@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSignup } from "../../hooks/useSignup";
 import "./VerifyUser.css";
 
 export default function VerifyUser(props) {
   const { signup, isPending, error } = useSignup();
+  const [invalidUser, setInvalidUser] = useState(null);
 
   useEffect(() => {
     const intervalID = setInterval(() => {
@@ -16,10 +17,14 @@ export default function VerifyUser(props) {
         const res = await fetch(url);
         const data = await res.json();
 
-        data &&
-          data.result[0].problem.contestId === 4 &&
-          data.result[0].problem.index === "A" &&
-          props.setVerified(true);
+        if (data.status !== "OK") {
+          setInvalidUser(true);
+        } else {
+          data &&
+            data.result[0].problem.contestId === 4 &&
+            data.result[0].problem.index === "A" &&
+            props.setVerified(true);
+        }
       };
 
       fetchData();
@@ -45,6 +50,9 @@ export default function VerifyUser(props) {
         </button>
       )}
       {error && <p className="error">{error}</p>}
+      {invalidUser === true && (
+        <p className="error">Invalid cf Handle, Now refresh the page</p>
+      )}
     </div>
   );
 }

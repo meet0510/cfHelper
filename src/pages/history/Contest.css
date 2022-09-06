@@ -1,0 +1,29 @@
+.contest-box {
+    display: flex;
+    flex-direction: row;
+}
+
+.contest-box button {
+    margin-top: 20px;
+    color: black;
+}
+
+.contest-box .solved-count-box {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.3rem;
+    margin-left: 25px;
+}
+
+.flex {
+    display: flex;
+    flex-direction: row;
+}
+
+.OK {
+    background-color: #d4edc9 !important;
+}
+
+.REJECTED {
+    background-color: #ffe3e3 !important;
+}

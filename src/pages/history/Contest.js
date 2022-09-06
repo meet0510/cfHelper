@@ -1,76 +1,58 @@
-import { useState, useEffect } from "react";
-import { projectFirestore } from "../../../firebase/config";
-import { useAuthContext } from "../../../hooks/useAuthContext";
-import Sidebar from "../homeSidebar/Sidebar";
-import SubmissionList from "./SubmissionList";
-import "./DisplayContest.css";
+import { useState } from "react";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import "./Contest.css";
 
-export default function DisplayContest({ contestId }) {
-  const { user } = useAuthContext();
-  const [problems, setProblems] = useState(null);
-  const [error, setError] = useState(null);
-  const [documents, setDocuments] = useState(null);
-  const [status, setStatus] = useState(null);
+export default function Contest({ contest, setShowCompleteDetails }) {
   const [showSubmissionList, setShowSubmissionList] = useState(false);
-  const [index, setIndex] = useState(null);
+  let status = null;
+  const { user: user_ } = useAuthContext();
 
-  useEffect(() => {
-    const ref = projectFirestore.collection("LiveContestData").doc(contestId);
-
-    const unsubscribe = ref.onSnapshot(
-      (snapshot) => {
-        setDocuments(snapshot.data());
-        snapshot.data().users.map((user_) => {
-          if (user_.cfHandle === user.displayName) {
-            setStatus(user_.status);
-          }
-        });
-      },
-      (error) => {
-        console.log(error);
-        setError("could not fetch the data");
-      }
-    );
-
-    // unsubscribe on unmount
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (documents) {
-      setProblems(documents.problems);
-
-      documents.users.map((user_, index) => {
-        if (user_.cfHandle === user.displayName) {
-          setIndex(index);
-        }
-      });
+  let solvedCount = contest.users.map((user) => {
+    if (user.cfHandle === user_.displayName) {
+      status = user.status;
     }
-  }, [documents]);
+    
+    let count = 0;
+    user.status.map((status) => {
+      if (status === "OK") {
+        count++;
+      }
+    });
+    return { cfHandle: user.cfHandle, solved: count };
+  });
+
+  solvedCount.sort((a, b) => {
+    return b.solved - a.solved;
+  });
+
+  console.log(solvedCount);
 
   return (
     <div className="contest-box">
-      {error && <p className="error">{error}</p>}
-      {!problems && <p className="error">Pending!!</p>}
-      <div className="side">
-        {problems && (
-          <Sidebar
-            contestId={contestId}
-            isAdmin={documents.users[0].cfHandle === user.displayName}
-          />
-        )}
-        {problems && !showSubmissionList && (
+      <div>
+        <div className="side-bar">
+          {solvedCount.map((solved) => (
+            <div className="flex">
+              <p>{solved.cfHandle}</p>
+              <p>{solved.solved}</p>
+            </div>
+          ))}
+        </div>
+        {!showSubmissionList && (
           <button className="btn" onClick={() => setShowSubmissionList(true)}>
             Show Submission!
           </button>
         )}
-        {problems && showSubmissionList && (
+        {showSubmissionList && (
           <button className="btn" onClick={() => setShowSubmissionList(false)}>
             Go Back!
           </button>
         )}
+        <button className="btn" onClick={() => setShowCompleteDetails(false)}>
+          Go Back to History!
+        </button>
       </div>
-      {problems && !showSubmissionList && (
+      {!showSubmissionList && (
         <table className="problem-box">
           <tbody>
             <tr>
@@ -80,7 +62,7 @@ export default function DisplayContest({ contestId }) {
               <th>Status</th>
               <th>Rating</th>
             </tr>
-            {problems.map((problem, index) => (
+            {contest.problems.map((problem,index) => (
               <tr key={problem.id} className="problem">
                 <td>
                   <a
@@ -134,14 +116,36 @@ export default function DisplayContest({ contestId }) {
           </tbody>
         </table>
       )}
-      {problems && (
-        <SubmissionList
-          user={user.displayName}
-          showList={showSubmissionList}
-          contestId={contestId}
-          problems={problems}
-          index={index}
-        />
+      {showSubmissionList && (
+        <table>
+          <tbody>
+            <tr>
+              <th>cfHandle</th>
+              <th>Name</th>
+              <th>Verdict</th>
+              <th>PassedTest</th>
+              <th>TimeLimit</th>
+              <th>MemoryLimit</th>
+              <th>Language</th>
+              <th>Time</th>
+            </tr>
+            {contest.submissions.map((submission) => (
+              <tr key={submission.id} className="submission">
+                <td>{submission.user}</td>
+                <td>{submission.problemName}</td>
+                <td>{submission.verdict}</td>
+                <td>{submission.passedTestCount}</td>
+                <td>{submission.timeLimit} ms</td>
+                <td>{submission.memoryLimit} kb</td>
+                <td>{submission.language}</td>
+                <td>
+                  {Math.floor(submission.time / 60)} :{" "}
+                  {Math.floor(submission.time % 60)} min
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );

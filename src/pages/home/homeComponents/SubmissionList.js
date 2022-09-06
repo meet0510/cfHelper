@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { projectFirestore, addToArray } from "../../../firebase/config";
+import "./SubmissionList.css";
 
 export default function SubmissionList({
   user,
   showList,
-  setShowList,
   contestId,
   problems,
   index,
@@ -14,7 +14,6 @@ export default function SubmissionList({
   const [prevSubmissionId, setPrevSubmissionId] = useState(null);
   const [submissionList, setSubmissionList] = useState(null);
   const [userStatus, setUserStatus] = useState(null);
-  const [changes,setChanges] = useState(false);
   const [totalTime, setTotalTime] = useState(null);
   const [error, setError] = useState(null);
 
@@ -26,6 +25,8 @@ export default function SubmissionList({
       (snapshot) => {
         setSubmissionList(snapshot.data().submissions);
         setTotalTime(snapshot.data().totalTime);
+        console.log(snapshot.data().users)
+        console.log(userStatus)
         setUserStatus(snapshot.data().users);
       },
       (error) => {
@@ -117,7 +118,6 @@ export default function SubmissionList({
               .collection("LiveContestData")
               .doc(contestId);
             ref.update({ users: new_user_status });
-            setChanges((prevChange) => !prevChange);
           }
         }
       });
@@ -125,35 +125,50 @@ export default function SubmissionList({
   };
 
   // Checks for user submission at every 20 seconds
-  useEffect(() => {
+  useEffect(useCallback(() => {
     const intervalID = setInterval(() => {
       fetchData();
     }, 5000);
 
     return () => clearInterval(intervalID);
-  }, [prevSubmissionId,changes]);
+  }), [prevSubmissionId]);
 
   return (
-    <div>
-      {showList && <button onClick={() => setShowList(false)}>Click</button>}
+    <>
       {showList && submissionList && submissionList.length === 0 && (
-        <h2>No submission</h2>
+        <h2 className="no">No submission Yet!!</h2>
       )}
-      {showList &&
-        submissionList &&
-        submissionList.length !== 0 &&
-        submissionList.map((submission) => (
-          <div>
-            <p>{submission.user}</p>
-            <p>{submission.problemName}</p>
-            <p>{submission.verdict}</p>
-            <p>{submission.passedTestCount}</p>
-            <p>{submission.timeLimit}</p>
-            <p>{submission.memoryLimit}</p>
-            <p>{submission.language}</p>
-            <p>{submission.time}</p>
-          </div>
-        ))}
-    </div>
+      {showList && submissionList && submissionList.length !== 0 && (
+        <table>
+          <tbody>
+            <tr>
+              <th>cfHandle</th>
+              <th>Name</th>
+              <th>Verdict</th>
+              <th>PassedTest</th>
+              <th>TimeLimit</th>
+              <th>MemoryLimit</th>
+              <th>Language</th>
+              <th>Time</th>
+            </tr>
+            {submissionList.map((submission) => (
+              <tr key={submission.id} className="submission">
+                <td>{submission.user}</td>
+                <td>{submission.problemName}</td>
+                <td>{submission.verdict}</td>
+                <td>{submission.passedTestCount}</td>
+                <td>{submission.timeLimit} ms</td>
+                <td>{submission.memoryLimit} kb</td>
+                <td>{submission.language}</td>
+                <td>
+                  {Math.floor(submission.time / 60)} :{" "}
+                  {Math.floor(submission.time % 60)} min
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
   );
 }

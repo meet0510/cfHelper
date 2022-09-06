@@ -3,6 +3,19 @@
     flex-direction: row;
 }
 
+.contest-box button {
+    margin-top: 20px;
+    color: black;
+}
+
+.contest-box .problem-box .problem .OK {
+    background-color: #d4edc9 !important;
+}
+
+.contest-box .problem-box .problem .REJECTED {
+    background-color: #ffe3e3 !important;
+}
+
 table {
     margin-top: 30px;
     margin-bottom: 30px;

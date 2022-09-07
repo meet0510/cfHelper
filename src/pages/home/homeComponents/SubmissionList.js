@@ -25,8 +25,6 @@ export default function SubmissionList({
       (snapshot) => {
         setSubmissionList(snapshot.data().submissions);
         setTotalTime(snapshot.data().totalTime);
-        console.log(snapshot.data().users)
-        console.log(userStatus)
         setUserStatus(snapshot.data().users);
       },
       (error) => {
@@ -118,6 +116,7 @@ export default function SubmissionList({
               .collection("LiveContestData")
               .doc(contestId);
             ref.update({ users: new_user_status });
+            window.location.reload();
           }
         }
       });

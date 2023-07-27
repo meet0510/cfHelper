@@ -39,7 +39,13 @@ export default function Sidebar({ contestId, isAdmin }) {
   return (
     <div className="side-bar">
       <h2>
-        {Math.floor(time / 60)} : {Math.floor(time % 60)}
+        {Math.floor(time / 60) < 10
+          ? "0" + Math.floor(time / 60)
+          : Math.floor(time / 60)}{" "}
+        :{" "}
+        {Math.floor(time % 60) < 10
+          ? "0" + Math.floor(time % 60)
+          : Math.floor(time % 60)}
       </h2>
       <SolvedCount contestId={contestId} />
       {time === 0 && isAdmin && <ContestEnd contestId={contestId} />}

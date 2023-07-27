@@ -36,9 +36,9 @@ export default function SolvedCount({ contestId }) {
         return { cfHandle: user.cfHandle, solved: count };
       });
 
-      solvedCount.sort((a,b) => {
+      solvedCount.sort((a, b) => {
         return b.solved - a.solved;
-      })
+      });
 
       setUsers(solvedCount);
     }
@@ -49,8 +49,16 @@ export default function SolvedCount({ contestId }) {
       {users !== null &&
         users.map((user) => (
           <div>
-            <p>{user.cfHandle}</p>
-            <p>{user.solved}</p>
+            <p>
+              <a
+                className="profile"
+                href={"https://codeforces.com/profile/" + user.cfHandle}
+                target="_blank"
+              >
+                {user.cfHandle}
+              </a>{" "}
+              - {user.solved}
+            </p>
           </div>
         ))}
     </div>

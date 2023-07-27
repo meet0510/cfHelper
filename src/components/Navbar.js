@@ -38,7 +38,7 @@ export default function Navbar() {
                 {user.displayName}
               </a>
             </li>
-            {path !== "/history" && (
+            {path.substring(0,8) !== "/history" && (
               <li>
                 <Link to="/history" className="btn">
                   History

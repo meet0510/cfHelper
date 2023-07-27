@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { projectFirestore } from "../../firebase/config";
 import Contest from "./Contest";
@@ -6,6 +7,7 @@ import "./History.css";
 
 export default function History() {
   const { user } = useAuthContext();
+  const history = useHistory();
   const [contests, setContests] = useState(null);
   const [showCompleteDetails, setShowCompleteDetails] = useState(false);
   const [index, setIndex] = useState(null);
@@ -33,8 +35,9 @@ export default function History() {
     return () => unsubscribe();
   }, []);
 
-  const handleClick = (contest) => {
-    setIndex(contest);
+  const handleClick = (index) => {
+    history.push("history/" + index);
+    setIndex(index);
     setShowCompleteDetails(true);
   };
 
@@ -44,20 +47,21 @@ export default function History() {
       {contests && !showCompleteDetails && (
         <ul className="history">
           {contests.map((contest, index) => (
-            <li key={index} onClick={() => handleClick(contest)}>
+            <li key={index} onClick={() => handleClick(index + 1)}>
               <p>{index + 1}</p>
-              <p>Time : {contest.totalTime}</p>
-              <p>Date : {contest.endedAt.toDate().toString()}</p>
+              <p>Date: {contest.endedAt.toDate().toString().substring(4, 15)}</p>
+              <p>Time: {contest.endedAt.toDate().toString().substring(17, 24)}</p>
+              <p className="duration">Duration: {contest.totalTime / 60 + " Min"} </p>
             </li>
           ))}
         </ul>
       )}
-      {contests && showCompleteDetails && (
+      {/* {contests && showCompleteDetails && (
         <Contest
           contest={index}
           setShowCompleteDetails={setShowCompleteDetails}
         />
-      )}
+      )} */}
     </div>
   );
 }

@@ -51,7 +51,7 @@ export default function DisplayContest({ contestId }) {
   return (
     <div className="contest-box">
       {error && <p className="error">{error}</p>}
-      {!problems && <p className="error">Pending!!</p>}
+      {!problems && <p className="error">Wait</p>}
       <div className="side">
         {problems && (
           <Sidebar
@@ -61,12 +61,12 @@ export default function DisplayContest({ contestId }) {
         )}
         {problems && !showSubmissionList && (
           <button className="btn" onClick={() => setShowSubmissionList(true)}>
-            Show Submission!
+            Show Submission
           </button>
         )}
         {problems && showSubmissionList && (
           <button className="btn" onClick={() => setShowSubmissionList(false)}>
-            Go Back!
+            Go Back
           </button>
         )}
       </div>

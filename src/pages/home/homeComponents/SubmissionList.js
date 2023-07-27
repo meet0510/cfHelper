@@ -40,6 +40,7 @@ export default function SubmissionList({
   useEffect(async () => {
     const res = await fetch(url);
     const data = await res.json();
+    console.log(data);
 
     if (data) {
       setPrevSubmissionId(data.result[0].id);
@@ -124,13 +125,16 @@ export default function SubmissionList({
   };
 
   // Checks for user submission at every 20 seconds
-  useEffect(useCallback(() => {
-    const intervalID = setInterval(() => {
-      fetchData();
-    }, 5000);
+  useEffect(
+    useCallback(() => {
+      const intervalID = setInterval(() => {
+        fetchData();
+      }, 5000);
 
-    return () => clearInterval(intervalID);
-  }), [prevSubmissionId]);
+      return () => clearInterval(intervalID);
+    }),
+    [prevSubmissionId]
+  );
 
   return (
     <>
@@ -145,8 +149,8 @@ export default function SubmissionList({
               <th>Name</th>
               <th>Verdict</th>
               <th>PassedTest</th>
-              <th>TimeLimit</th>
-              <th>MemoryLimit</th>
+              <th>TL</th>
+              <th>ML</th>
               <th>Language</th>
               <th>Time</th>
             </tr>
@@ -154,7 +158,9 @@ export default function SubmissionList({
               <tr key={submission.id} className="submission">
                 <td>{submission.user}</td>
                 <td>{submission.problemName}</td>
-                <td>{submission.verdict}</td>
+                <td className={submission.verdict === "OK" ? "OK" : "REJECTED"}>
+                  {submission.verdict}
+                </td>
                 <td>{submission.passedTestCount}</td>
                 <td>{submission.timeLimit} ms</td>
                 <td>{submission.memoryLimit} kb</td>

@@ -1,37 +1,11 @@
-/* .submission-list {
-    display: flex;
-    flex-direction: row;
-} */
-
 .no {
     margin-top: 30px;
 }
 
-/* table {
-    margin-top: 30px;
-    margin-bottom: 30px;
-    border: 2px solid var(--primary-color);
-    border-radius: 1px;
-    border-collapse: collapse;
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #fff;
-    overflow-x: auto;
+.OK {
+    background-color: #d4edc9 !important;
 }
 
-th {
-    border-bottom: 1px solid black;
-    border-right: 1px solid black;
-    padding-top: 23px;
-    padding-bottom: 23px;
-    font-size: 1.3rem;
+.REJECTED {
+    background-color: #ffe3e3 !important;
 }
-
-td {
-    text-align: center;
-    padding-top: 18px;
-    padding-bottom: 18px;
-    border-right: 1px solid black;
-    border-bottom: 1px solid black;
-} */

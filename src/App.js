@@ -6,6 +6,7 @@ import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
 import History from "./pages/history/History";
 import Navbar from "./components/Navbar";
+import Contest from "./pages/history/Contest";
 import "./App.css";
 
 function App() {
@@ -31,6 +32,10 @@ function App() {
             </Route>
             <Route exact path="/history">
               {user && <History />}
+              {!user && <Redirect to="/login" />}
+            </Route>
+            <Route exact path="/history/:id">
+              {user && <Contest />}
               {!user && <Redirect to="/login" />}
             </Route>
           </Switch>

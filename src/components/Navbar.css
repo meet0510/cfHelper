@@ -29,5 +29,6 @@
 }
 
 .navbar .profile:hover {
+    color: blue;
     text-decoration: underline;
 }

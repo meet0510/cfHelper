@@ -1,58 +1,98 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { projectFirestore } from "../../firebase/config";
 import "./Contest.css";
 
-export default function Contest({ contest, setShowCompleteDetails }) {
-  const [showSubmissionList, setShowSubmissionList] = useState(false);
-  let status = null;
+export default function Contest() {
+  const { id } = useParams();
   const { user: user_ } = useAuthContext();
+  const [showSubmissionList, setShowSubmissionList] = useState(false);
+  const [contest, setContest] = useState(null);
+  const [solvedCount, setSolvedCount] = useState(null);
+  const [status, setStatus] = useState(null);
+  const [error, setError] = useState(null);
 
-  let solvedCount = contest.users.map((user) => {
-    if (user.cfHandle === user_.displayName) {
-      status = user.status;
-    }
-    
-    let count = 0;
-    user.status.map((status) => {
-      if (status === "OK") {
-        count++;
+  useEffect(() => {
+    const ref = projectFirestore
+      .collection("PastContestData")
+      .doc(user_.displayName);
+
+    const unsubscribe = ref.onSnapshot(
+      (snapshot) => {
+        const data = snapshot.data().ContestList.sort((a, b) => {
+          return new Date(b.endedAt.toDate()) - new Date(a.endedAt.toDate());
+        });
+
+        setContest(data[id - 1]);
+      },
+      (error) => {
+        console.log(error);
+        setError("could not fetch the data");
       }
-    });
-    return { cfHandle: user.cfHandle, solved: count };
-  });
+    );
 
-  solvedCount.sort((a, b) => {
-    return b.solved - a.solved;
-  });
+    return () => unsubscribe();
+  }, []);
 
-  console.log(solvedCount);
+  useEffect(() => {
+    if (contest) {
+      let tempSolvedCount = contest.users.map((user) => {
+        if (user.cfHandle === user_.displayName) {
+          setStatus(user.status);
+        }
+
+        let count = 0;
+        user.status.map((status) => {
+          if (status === "OK") {
+            count++;
+          }
+        });
+        return { cfHandle: user.cfHandle, solved: count };
+      });
+
+      tempSolvedCount.sort((a, b) => {
+        return b.solved - a.solved;
+      });
+
+      setSolvedCount(tempSolvedCount);
+    }
+  }, [contest]);
 
   return (
     <div className="contest-box">
+      {error && <p className="error">{error}</p>}
       <div>
-        <div className="side-bar">
-          {solvedCount.map((solved) => (
-            <div className="flex">
-              <p>{solved.cfHandle}</p>
-              <p>{solved.solved}</p>
-            </div>
-          ))}
-        </div>
-        {!showSubmissionList && (
+        {solvedCount && (
+          <div className="side-box">
+            {solvedCount.map((solved) => (
+              <div className="flex">
+                <p>
+                  <a
+                    className="profile"
+                    href={"https://codeforces.com/profile/" + solved.cfHandle}
+                    target="_blank"
+                  >
+                    {solved.cfHandle}
+                  </a>{" "}
+                  - {solved.solved}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+        {!showSubmissionList && contest && solvedCount && (
           <button className="btn" onClick={() => setShowSubmissionList(true)}>
-            Show Submission!
+            Show Submission
           </button>
         )}
-        {showSubmissionList && (
+        {showSubmissionList && contest && solvedCount && (
           <button className="btn" onClick={() => setShowSubmissionList(false)}>
-            Go Back!
+            Go Back
           </button>
         )}
-        <button className="btn" onClick={() => setShowCompleteDetails(false)}>
-          Go Back to History!
-        </button>
       </div>
-      {!showSubmissionList && (
+      {!showSubmissionList && contest && solvedCount && (
         <table className="problem-box">
           <tbody>
             <tr>
@@ -62,7 +102,7 @@ export default function Contest({ contest, setShowCompleteDetails }) {
               <th>Status</th>
               <th>Rating</th>
             </tr>
-            {contest.problems.map((problem,index) => (
+            {contest.problems.map((problem, index) => (
               <tr key={problem.id} className="problem">
                 <td>
                   <a
@@ -116,7 +156,7 @@ export default function Contest({ contest, setShowCompleteDetails }) {
           </tbody>
         </table>
       )}
-      {showSubmissionList && (
+      {showSubmissionList && contest && solvedCount && (
         <table>
           <tbody>
             <tr>
@@ -133,7 +173,9 @@ export default function Contest({ contest, setShowCompleteDetails }) {
               <tr key={submission.id} className="submission">
                 <td>{submission.user}</td>
                 <td>{submission.problemName}</td>
-                <td>{submission.verdict}</td>
+                <td className={submission.verdict === "OK" ? "OK" : "REJECTED"}>
+                  {submission.verdict}
+                </td>
                 <td>{submission.passedTestCount}</td>
                 <td>{submission.timeLimit} ms</td>
                 <td>{submission.memoryLimit} kb</td>
